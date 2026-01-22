@@ -1,4 +1,5 @@
 export { Button } from './Button';
+export { Checkbox, CheckboxTag } from './Checkbox';
 export { Chip } from './Chip';
 export { Modal } from './Modal';
 export { Logo } from './Logo';
