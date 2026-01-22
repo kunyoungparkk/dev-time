@@ -7,4 +7,5 @@ export {
   NavigationBarMenu,
   NavigationBarLogin,
 } from './NavigationBar';
+export { Pagination } from './Pagination';
 export { Tooltip } from './Tooltip';
