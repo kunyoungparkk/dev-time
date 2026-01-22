@@ -10,13 +10,13 @@
   --color-primary-gradient-from: #4c79ff;
   --color-primary-gradient-to: #023e99;
 
-  /* Semantic */
-  --color-semantic-indigo: #023e99;
-  --color-semantic-informative: #2563eb;
-  --color-semantic-negative: #dc2626;
-  --color-semantic-notice: #ffbf24;
-  --color-semantic-positive: #22c55e;
-  --color-semantic-fuchsia: #fd28ec;
+  /* Secondary */
+  --color-secondary-indigo: #023e99;
+  --color-secondary-informative: #2563eb;
+  --color-secondary-negative: #dc2626;
+  --color-secondary-notice: #ffbf24;
+  --color-secondary-positive: #22c55e;
+  --color-secondary-fuchsia: #fd28ec;
 
   /* Gray */
   --color-gray-white: #ffffff;
