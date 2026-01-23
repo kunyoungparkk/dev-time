@@ -21,8 +21,8 @@ export const Modal = ({
   onClose,
   title,
   description,
-  primaryButtonText = "Confirm",
-  secondaryButtonText = "Cancel",
+  primaryButtonText,
+  secondaryButtonText,
   onPrimaryClick,
   onSecondaryClick,
   className,
@@ -97,9 +97,11 @@ export const Modal = ({
         </div>
 
         <div className="gap-2 flex justify-end">
-          <Button variant="secondary" onClick={handleSecondaryClick}>
-            {secondaryButtonText}
-          </Button>
+          {secondaryButtonText && (
+            <Button variant="secondary" onClick={handleSecondaryClick}>
+              {secondaryButtonText}
+            </Button>
+          )}
           <Button variant="primary" onClick={handlePrimaryClick}>
             {primaryButtonText}
           </Button>
