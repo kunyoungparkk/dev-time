@@ -8,12 +8,8 @@ export const DoubleChevronLeftIcon = ({ size = 24, className }: IconProps) => {
     <svg
       width={size}
       height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      viewBox={`0 0 ${size} ${size}`}
+      fill="currentColor"
       className={className}
     >
       <path d="M17 17L12 12L17 7" />

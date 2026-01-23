@@ -18,3 +18,4 @@ export { UserIcon } from './UserIcon';
 export { TodoIcon } from './TodoIcon';
 export { ResetIcon } from './ResetIcon';
 
+export { CodeIcon } from './CodeIcon';

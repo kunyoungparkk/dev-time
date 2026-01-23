@@ -3,6 +3,8 @@ import { CheckIcon } from "@/components/icons";
 
 interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
+  size?: number;
+  color?: string;
 }
 
 export const Checkbox = ({
@@ -10,6 +12,8 @@ export const Checkbox = ({
   className,
   checked,
   onChange,
+  size = 18,
+  color = "primary",
   ...props
 }: CheckboxProps) => {
   return (
@@ -23,15 +27,16 @@ export const Checkbox = ({
           {...props}
         />
           <div
-            className={cn(
-              "w-[18px] h-[18px] rounded-md transition-all flex items-center justify-center",
-              checked
-                ? "bg-[rgba(76,121,255,0.1)] border border-[var(--color-primary)]"
-                : "bg-white border border-[var(--color-primary)]"
-            )}
+            className="rounded-md transition-all flex items-center justify-center border"
+            style={{
+              width: size,
+              height: size,
+              borderColor: `var(--color-${color})`,
+              backgroundColor: checked ? "rgba(76,121,255,0.1)" : "transparent",
+            }}
           >
             {checked && (
-              <CheckIcon className="w-4 h-4 text-[var(--color-primary)]" />
+              <CheckIcon className={`text-[var(--color-${color})]`} size={size} />
             )}
           </div>
       </div>
@@ -84,7 +89,7 @@ export const CheckboxTag = ({
         )}
       >
         {checked && (
-          <CheckIcon className="w-4 h-4 text-[var(--color-primary)]" />
+          <CheckIcon className="text-[var(--color-primary)]"/>
         )}
       </div>
 

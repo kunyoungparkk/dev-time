@@ -9,4 +9,6 @@ export {
   NavigationBarLogin,
 } from './NavigationBar';
 export { Pagination } from './Pagination';
+export { TodoList } from './TodoList';
 export { Tooltip } from './Tooltip';
+export { RankingList } from './RankingList';
