@@ -1,6 +1,9 @@
 export { Button } from './Button';
 export { Checkbox, CheckboxTag } from './Checkbox';
 export { Chip } from './Chip';
+export { Dropdown } from './Dropdown';
+export { AutoComplete } from './AutoComplete';
+export { ProfileDropdown } from './ProfileDropdown';
 export { Modal } from './Modal';
 export { Logo } from './Logo';
 export {
