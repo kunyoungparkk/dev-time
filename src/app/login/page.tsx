@@ -107,7 +107,7 @@ export default function Login() {
                     }
                   });
 
-                } catch (error: any) {
+                } catch (error) {
                   // 로그인에 실패했습니다.
                   setIsModalOpen(true);
                   setModalTitle("알 수 없는 이유로 로그인에 실패했습니다.");
