@@ -114,6 +114,7 @@ export interface TextFieldButtonProps extends React.ButtonHTMLAttributes<HTMLBut
 }
 
 export const TextFieldButton = ({
+  type = "button",
   children,
   className,
   ...buttonProps
@@ -121,6 +122,7 @@ export const TextFieldButton = ({
   return (
     <Button
       variant="secondary"
+      type={type}
       className={cn("h-11 fontSize-label-s flex-none", className)}
       {...buttonProps}
     >
@@ -146,7 +148,6 @@ export const TextField = ({
   helperText,
   helperVariant,
   buttonText,
-  buttonDisabled = false,
   onButtonClick,
   containerClassName,
   inputContainerClassName,
@@ -158,6 +159,11 @@ export const TextField = ({
   const internalId = useId();
   const inputId = idProp ?? internalId;
   const helperTextId = useId();
+
+  const buttonDisabled =
+    inputProps.value !== undefined || inputProps.defaultValue !== undefined
+      ? String(inputProps.value ?? inputProps.defaultValue ?? "").trim().length === 0
+      : false;
 
   return (
     <div className={cn("flex flex-col items-start gap-2 w-52", containerClassName)}>

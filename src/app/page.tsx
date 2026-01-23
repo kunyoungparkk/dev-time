@@ -1,13 +1,10 @@
-import { Timer } from "@/components/ui/Timer";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white p-10">
-      <Timer
-        initialHours={0}
-        initialMinutes={25}
-        initialSeconds={0}
-      />
+    <div>
+      <Link href="/signup">Sign-Up</Link><br/>
+      <Link href="/login">Login</Link>
     </div>
   );
 }
