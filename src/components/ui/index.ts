@@ -15,3 +15,8 @@ export { Pagination } from './Pagination';
 export { TodoList } from './TodoList';
 export { Tooltip } from './Tooltip';
 export { RankingList } from './RankingList';
+export { Textarea } from './Textarea';
+export { Tag } from './Tag';
+export { ImageUpload } from './ImageUpload';
+export { TextField, TextFieldInput, TextFieldHelperText, TextFieldButton } from './TextField';
+export { Timer } from './Timer';

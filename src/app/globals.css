@@ -1,6 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap");
 @import "tailwindcss";
-
 @theme {
+  --font-digital: "Orbitron", sans-serif;
   /* ===== Colors ===== */
   /* Primary */
   --color-primary: #4c79ff;
@@ -169,6 +170,12 @@
 }
 
 @layer utilities {
+  .font-digital {
+    font-family: var(--font-digital, "Orbitron", sans-serif);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+  }
+
   /* Heading */
   .fontSize-heading-b {
     font-size: var(--font-size-heading-b);
