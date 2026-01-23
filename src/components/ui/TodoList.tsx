@@ -1,8 +1,10 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import { EditIcon, CodeIcon, TrashIcon, CheckIcon } from "@/components/icons";
 import { Checkbox } from "./Checkbox";
 
-type TodoStatus =
+export type TodoStatus =
   | "adding"
   | "typing"
   | "checkable"
@@ -10,14 +12,17 @@ type TodoStatus =
   | "completed"
   | "failed";
 
-interface TodoItem {
+export interface TodoItem {
   id: string;
   text: string;
   status: TodoStatus;
 }
 
-interface TodoListProps {
+export interface TodoListProps {
   items?: TodoItem[];
+  onEdit?: (id: string) => void;
+  onDelete?: (id: string) => void;
+  onToggleCheck?: (id: string) => void;
   className?: string;
 }
 
@@ -32,38 +37,48 @@ const defaultItems: TodoItem[] = [
 
 const statusStyles: Record<TodoStatus, { container: string; text: string; icon: string }> = {
   adding: {
-    container: "bg-[#4C79FF] text-white",
+    container: "bg-primary text-white",
     text: "text-white",
     icon: "text-white/80",
   },
   typing: {
-    container: "bg-[#4C79FF] text-white",
+    container: "bg-primary text-white",
     text: "text-white",
     icon: "text-white/80",
   },
   checkable: {
-    container: "bg-[#4C79FF] text-white",
+    container: "bg-primary text-white",
     text: "text-white",
     icon: "text-white/80",
   },
   checked: {
-    container: "bg-[#969DA8] text-white",
+    container: "bg-gray-400 text-white",
     text: "text-white",
     icon: "text-white/80",
   },
   completed: {
-    container: "bg-[#4C79FF] text-white",
+    container: "bg-primary text-white",
     text: "text-white",
     icon: "text-white/80",
   },
   failed: {
-    container: "bg-[#E5E7EB]",
-    text: "text-[#969DA8]",
-    icon: "text-[#CCD0D6]",
+    container: "bg-gray-200",
+    text: "text-gray-400",
+    icon: "text-gray-300",
   },
 };
 
-const TodoRow = ({ item }: { item: TodoItem }) => {
+const TodoRow = ({
+  item,
+  onEdit,
+  onDelete,
+  onToggleCheck,
+}: {
+  item: TodoItem;
+  onEdit?: () => void;
+  onDelete?: () => void;
+  onToggleCheck?: () => void;
+}) => {
   const styles = statusStyles[item.status];
   const showActions = item.status === "adding";
   const showTypingCheck = item.status === "typing";
@@ -78,33 +93,51 @@ const TodoRow = ({ item }: { item: TodoItem }) => {
       )}
     >
       <div className={cn("w-[42px] h-[20px] flex items-center justify-center", styles.icon)}>
-        <CodeIcon/>
+        <CodeIcon />
       </div>
       <div className={cn("flex items-center gap-3 flex-1 fontSize-body-s", styles.text)}>
         <span>{item.text}</span>
         {showTypingCheck && (
           <>
             <span className="w-px h-[18px] bg-white/80" />
-            <CheckIcon/>
+            <CheckIcon />
           </>
         )}
       </div>
       {showActions && (
         <div className="flex items-center gap-3">
-          <button type="button" className="text-white hover:text-white/80">
-            <EditIcon/>
+          <button
+            type="button"
+            onClick={onEdit}
+            className="text-white hover:text-white/80"
+            aria-label="Edit todo"
+          >
+            <EditIcon />
           </button>
-          <button type="button" className="text-white hover:text-white/80">
-            <TrashIcon/>
+          <button
+            type="button"
+            onClick={onDelete}
+            className="text-white hover:text-white/80"
+            aria-label="Delete todo"
+          >
+            <TrashIcon />
           </button>
         </div>
       )}
-      {showCheckbox && <Checkbox checked={isChecked} color="white" size={36} />}
+      {showCheckbox && (
+        <Checkbox checked={isChecked} onChange={onToggleCheck} color="white" size={36} />
+      )}
     </div>
   );
 };
 
-export const TodoList = ({ items = defaultItems, className }: TodoListProps) => {
+export const TodoList = ({
+  items = defaultItems,
+  onEdit,
+  onDelete,
+  onToggleCheck,
+  className,
+}: TodoListProps) => {
   return (
     <div
       className={cn(
@@ -113,7 +146,13 @@ export const TodoList = ({ items = defaultItems, className }: TodoListProps) => 
       )}
     >
       {items.map((item) => (
-        <TodoRow key={item.id} item={item} />
+        <TodoRow
+          key={item.id}
+          item={item}
+          onEdit={() => onEdit?.(item.id)}
+          onDelete={() => onDelete?.(item.id)}
+          onToggleCheck={() => onToggleCheck?.(item.id)}
+        />
       ))}
     </div>
   );

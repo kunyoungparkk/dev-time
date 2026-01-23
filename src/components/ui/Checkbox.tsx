@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { CheckIcon } from "@/components/icons";
 
-interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   size?: number;
   color?: string;
@@ -50,7 +50,7 @@ export const Checkbox = ({
   );
 };
 
-interface CheckboxTagProps {
+export interface CheckboxTagProps {
   label: string;
   checked?: boolean;
   onChange?: (checked: boolean) => void;

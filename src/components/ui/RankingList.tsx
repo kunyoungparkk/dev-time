@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-interface RankingItem {
+export interface RankingItem {
   id: string;
   rank: number;
   name: string;
@@ -11,7 +11,7 @@ interface RankingItem {
   stacks: string[];
 }
 
-interface RankingListProps {
+export interface RankingListProps {
   items?: RankingItem[];
   className?: string;
 }
@@ -51,12 +51,12 @@ const defaultItems: RankingItem[] = [
 
 const getRankStyle = (rank: number) => {
   if (rank <= 3) {
-    return { badge: "bg-[#4C79FF] text-white", text: "text-[#4C79FF]" };
+    return { badge: "bg-primary text-white", text: "text-primary" };
   }
   if (rank <= 10) {
-    return { badge: "bg-[rgba(76,121,255,0.1)] text-[#4C79FF]", text: "text-[#4C79FF]" };
+    return { badge: "bg-[rgba(76,121,255,0.1)] text-primary", text: "text-primary" };
   }
-  return { badge: "bg-[#F0F2F5] text-[#717887]", text: "text-[#4C79FF]" };
+  return { badge: "bg-gray-100 text-gray-500", text: "text-primary" };
 };
 
 const getOrdinalSuffix = (rank: number) => {
@@ -81,32 +81,32 @@ const RankRow = ({ item }: { item: RankingItem }) => {
           {rankLabel}
           {rankSuffix}
         </div>
-        <div className="w-20 h-20 rounded-full bg-[radial-gradient(circle_at_30%_30%,#D8E2FF,#B3C5FF)] border border-[#E5E7EB]" />
+        <div className="w-20 h-20 rounded-full bg-[radial-gradient(circle_at_30%_30%,#D8E2FF,#B3C5FF)] border border-gray-200" />
       </div>
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-1">
           <div className={cn("fontSize-title-b", styles.text)}>{item.name}</div>
           <div className={cn("fontSize-body-m", styles.text)}>{item.goal}</div>
         </div>
-        <div className="flex items-center gap-6 fontSize-body-m text-[#717887]">
+        <div className="flex items-center gap-6 fontSize-body-m text-gray-500">
           <div className="flex items-center gap-2">
             <span>Total</span>
-            <span className="fontSize-body-s text-[#394252]">{item.totalHours}</span>
+            <span className="fontSize-body-s text-gray-700">{item.totalHours}</span>
           </div>
           <div className="flex items-center gap-2">
             <span>Daily Avg</span>
-            <span className="fontSize-body-s text-[#394252]">{item.dailyAverage}</span>
+            <span className="fontSize-body-s text-gray-700">{item.dailyAverage}</span>
           </div>
           <div className="flex items-center gap-2">
             <span>Career</span>
-            <span className="fontSize-body-s text-[#394252]">{item.career}</span>
+            <span className="fontSize-body-s text-gray-700">{item.career}</span>
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
           {item.stacks.map((stack, index) => (
             <div
               key={`${item.id}-stack-${index}`}
-              className="rounded-[5px] bg-[#F0F2F5] px-2 py-1 fontSize-body-m text-[#717887]"
+              className="rounded-[5px] bg-gray-100 px-2 py-1 fontSize-body-m text-gray-500"
             >
               {stack}
             </div>

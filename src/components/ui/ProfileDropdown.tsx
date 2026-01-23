@@ -3,15 +3,20 @@
 import { cn } from "@/lib/utils";
 import { useControllableState, useOnClickOutside } from "@/lib/hooks";
 import { LogoutIcon, UserIcon } from "@/components/icons";
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
-interface ProfileDropdownProps {
+export interface ProfileDropdownItem {
+  key: string;
+  label: string;
+  icon?: React.ReactNode;
+  href?: string;
+  onClick?: () => void;
+}
+
+export interface ProfileDropdownProps {
   userName?: string;
   userImage?: string;
-  myPageHref?: string;
-  logoutHref?: string;
-  onMyPage?: () => void;
-  onLogout?: () => void;
+  items?: ProfileDropdownItem[];
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -21,13 +26,24 @@ interface ProfileDropdownProps {
   menuClassName?: string;
 }
 
+const defaultItems: ProfileDropdownItem[] = [
+  {
+    key: "mypage",
+    label: "마이페이지",
+    icon: <UserIcon size={20} className="text-gray-600" />,
+    href: "/mypage",
+  },
+  {
+    key: "logout",
+    label: "로그아웃",
+    icon: <LogoutIcon size={20} className="text-gray-600" />,
+  },
+];
+
 export const ProfileDropdown = ({
   userName = "User",
   userImage,
-  myPageHref = "/mypage",
-  logoutHref,
-  onMyPage,
-  onLogout,
+  items = defaultItems,
   open: openProp,
   defaultOpen = false,
   onOpenChange,
@@ -50,26 +66,6 @@ export const ProfileDropdown = ({
 
   const menuId = useId();
   const buttonId = useId();
-
-  const items = useMemo(
-    () => [
-      {
-        key: "mypage",
-        label: "마이페이지",
-        icon: <UserIcon size={20} className="text-[#4B5563]" />,
-        href: myPageHref,
-        onSelect: onMyPage,
-      },
-      {
-        key: "logout",
-        label: "로그아웃",
-        icon: <LogoutIcon size={20} className="text-[#4B5563]" />,
-        href: logoutHref,
-        onSelect: onLogout,
-      },
-    ],
-    [logoutHref, myPageHref, onLogout, onMyPage]
-  );
 
   const closeMenu = () => {
     setOpen(false);
@@ -187,19 +183,19 @@ export const ProfileDropdown = ({
         onKeyDown={onTriggerKeyDown}
         className={cn(
           "flex items-center gap-3 rounded-[999px] bg-white px-3 py-2 shadow-[0px_8px_8px_rgba(0,0,0,0.05)]",
-          "border border-[#CCD0D6]",
+          "border border-gray-300",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF47FF]",
           buttonClassName
         )}
       >
-        <div className="w-8 h-8 rounded-full bg-[#E5E7EB] overflow-hidden flex items-center justify-center flex-none">
+        <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center flex-none">
           {userImage ? (
             <img src={userImage} alt={userName} className="w-full h-full object-cover" />
           ) : (
-            <span className="fontSize-body-s text-[#4B5563]">{triggerInitial}</span>
+            <span className="fontSize-body-s text-gray-600">{triggerInitial}</span>
           )}
         </div>
-        <span className="fontSize-body-m text-[#4B5563]">{userName}</span>
+        <span className="fontSize-body-m text-gray-600">{userName}</span>
       </button>
 
       {open && (
@@ -208,7 +204,7 @@ export const ProfileDropdown = ({
           role="menu"
           aria-labelledby={buttonId}
           className={cn(
-            "absolute z-50 mt-2 w-[130px] rounded-[5px] border border-[#CCD0D6] bg-white px-3 py-4 shadow-[0px_8px_8px_rgba(0,0,0,0.05)]",
+            "absolute z-50 mt-2 w-[130px] rounded-[5px] border border-gray-300 bg-white px-3 py-4 shadow-[0px_8px_8px_rgba(0,0,0,0.05)]",
             align === "end" ? "right-0" : "left-0",
             menuClassName
           )}
@@ -225,9 +221,9 @@ export const ProfileDropdown = ({
                 onMouseDown: (e: React.MouseEvent) => e.preventDefault(),
                 onKeyDown: (e: React.KeyboardEvent) => onItemKeyDown(e, index),
                 className: cn(
-                  "flex w-full items-center gap-4 rounded-[5px] px-2 py-1 text-left text-[#4B5563]",
+                  "flex w-full items-center gap-4 rounded-[5px] px-2 py-1 text-left text-gray-600",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF47FF]",
-                  "hover:bg-[#F9FAFB]"
+                  "hover:bg-gray-50"
                 ),
               };
 
@@ -244,8 +240,8 @@ export const ProfileDropdown = ({
                     <a
                       {...commonProps}
                       href={item.href}
-                      onClick={() => {
-                        item.onSelect?.();
+                      onClick={(e) => {
+                        item.onClick?.();
                         closeMenu();
                       }}
                     >
@@ -256,14 +252,14 @@ export const ProfileDropdown = ({
                       {...commonProps}
                       type="button"
                       onClick={() => {
-                        item.onSelect?.();
+                        item.onClick?.();
                         closeMenu();
                       }}
                     >
                       {content}
                     </button>
                   )}
-                  {index < items.length - 1 && <span className="h-px w-full bg-[#CCD0D6]" />}
+                  {index < items.length - 1 && <span className="h-px w-full bg-gray-300" />}
                 </div>
               );
             })}

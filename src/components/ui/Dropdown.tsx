@@ -11,21 +11,24 @@ export interface DropdownOption {
   disabled?: boolean;
 }
 
-export interface DropdownProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface DropdownProps {
   label?: string;
   placeholder?: string;
   options?: DropdownOption[];
   items?: string[];
-  selectedValue?: string;
-  defaultSelectedValue?: string;
-  onSelectedValueChange?: (value: string) => void;
+  value?: string;
+  defaultValue?: string;
+  onChange?: (value: string) => void;
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
   name?: string;
+  disabled?: boolean;
   maxMenuHeight?: number;
   containerClassName?: string;
   menuClassName?: string;
+  buttonClassName?: string;
+  id?: string;
 }
 
 export const Dropdown = ({
@@ -33,25 +36,20 @@ export const Dropdown = ({
   placeholder = "Placeholder",
   options,
   items,
-  selectedValue: selectedValueProp,
-  defaultSelectedValue,
-  onSelectedValueChange,
+  value,
+  defaultValue,
+  onChange,
   open: openProp,
   defaultOpen = false,
   onOpenChange,
   name,
+  disabled = false,
   maxMenuHeight = 340,
   containerClassName,
   menuClassName,
-  onClick,
-  onKeyDown,
-  className,
+  buttonClassName,
   id: idProp,
-  type: typeProp,
-  ...buttonProps
 }: DropdownProps) => {
-  const disabled = Boolean(buttonProps.disabled);
-
   const builtOptions = useMemo<DropdownOption[]>(() => {
     if (options?.length) return options;
     if (items?.length) return items.map((item) => ({ label: item, value: item }));
@@ -59,9 +57,9 @@ export const Dropdown = ({
   }, [items, options]);
 
   const [selectedValue, setSelectedValue] = useControllableState<string>({
-    value: selectedValueProp,
-    defaultValue: defaultSelectedValue ?? "",
-    onChange: onSelectedValueChange,
+    value,
+    defaultValue: defaultValue ?? "",
+    onChange,
   });
 
   const [open, setOpen] = useControllableState<boolean>({
@@ -149,8 +147,6 @@ export const Dropdown = ({
   }, [open, activeIndex]);
 
   const onButtonKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
-    onKeyDown?.(e);
-    if (e.defaultPrevented) return;
     if (disabled) return;
 
     if (e.key === "ArrowDown") {
@@ -235,7 +231,7 @@ export const Dropdown = ({
       className={cn("flex flex-col items-start gap-2 w-[147px]", containerClassName)}
     >
       {label && (
-        <span id={labelId} className="fontSize-body-sm-m text-[#4B5563]">
+        <span id={labelId} className="fontSize-body-sm-m text-gray-600">
           {label}
         </span>
       )}
@@ -246,38 +242,33 @@ export const Dropdown = ({
         <button
           ref={buttonRef}
           id={buttonId}
-          type={typeProp ?? "button"}
+          type="button"
           disabled={disabled}
           aria-haspopup="listbox"
           aria-expanded={open}
           aria-controls={listboxId}
           aria-labelledby={label ? `${labelId} ${buttonId}` : buttonId}
-          onClick={(e) => {
-            onClick?.(e);
-            if (e.defaultPrevented) return;
-            open ? closeMenu() : openMenu();
-          }}
+          onClick={() => (open ? closeMenu() : openMenu())}
           onKeyDown={onButtonKeyDown}
           className={cn(
-            "flex w-full items-center gap-2 rounded-[5px] bg-[#F9FAFB] px-4 py-3 text-left",
+            "flex w-full items-center gap-2 rounded-[5px] bg-gray-50 px-4 py-3 text-left",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF47FF]",
             disabled && "opacity-50 cursor-not-allowed",
-            className
+            buttonClassName
           )}
-          {...buttonProps}
         >
           <span
             className={cn(
               "flex-1 fontSize-body-m",
-              selectedOption ? "text-[#4B5563]" : "text-[#CCD0D6]"
+              selectedOption ? "text-gray-600" : "text-gray-300"
             )}
           >
             {selectedOption?.label ?? placeholder}
           </span>
           {open ? (
-            <ChevronUpIcon className="w-6 h-6 text-[#023E99]" />
+            <ChevronUpIcon className="w-6 h-6 text-secondary-indigo" />
           ) : (
-            <ChevronDownIcon className="w-6 h-6 text-[#023E99]" />
+            <ChevronDownIcon className="w-6 h-6 text-secondary-indigo" />
           )}
         </button>
 
@@ -287,7 +278,7 @@ export const Dropdown = ({
             role="listbox"
             aria-labelledby={label ? labelId : undefined}
             className={cn(
-              "absolute left-0 right-0 z-50 mt-2 w-full rounded-[5px] border border-[#CCD0D6] bg-white px-3 py-4 shadow-[0px_8px_8px_rgba(0,0,0,0.05)]",
+              "absolute left-0 right-0 z-50 mt-2 w-full rounded-[5px] border border-gray-300 bg-white px-3 py-4 shadow-[0px_8px_8px_rgba(0,0,0,0.05)]",
               menuClassName
             )}
             style={{ maxHeight: maxMenuHeight, overflowY: "auto" }}
@@ -321,13 +312,13 @@ export const Dropdown = ({
                         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF47FF]",
                         option.disabled && "cursor-not-allowed opacity-40",
                         isActive || isSelected
-                          ? "font-bold text-[#023E99]"
-                          : "text-[#4B5563]"
+                          ? "font-bold text-secondary-indigo"
+                          : "text-gray-600"
                       )}
                     >
                       {option.label}
                     </button>
-                    {index < builtOptions.length - 1 && <span className="h-px w-full bg-[#CCD0D6]" />}
+                    {index < builtOptions.length - 1 && <span className="h-px w-full bg-gray-300" />}
                   </div>
                 );
               })}

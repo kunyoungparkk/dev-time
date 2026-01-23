@@ -68,8 +68,8 @@ export const Pagination = ({
         className={cn(
           "w-6 h-6 rounded-md flex items-center justify-center transition-colors",
           isFirstPage
-            ? "bg-[#E5E7EB] text-[#CCD0D6] cursor-not-allowed"
-            : "bg-[rgba(76,121,255,0.1)] text-[#4C79FF] hover:bg-[rgba(76,121,255,0.2)]"
+            ? "bg-gray-200 text-gray-300 cursor-not-allowed"
+            : "bg-[rgba(76,121,255,0.1)] text-primary hover:bg-[rgba(76,121,255,0.2)]"
         )}
       >
         <DoubleChevronLeftIcon className="w-6 h-6" />
@@ -82,8 +82,8 @@ export const Pagination = ({
         className={cn(
           "w-6 h-6 rounded-md flex items-center justify-center transition-colors",
           isFirstPage
-            ? "bg-[#E5E7EB] text-[#CCD0D6] cursor-not-allowed"
-            : "bg-[rgba(76,121,255,0.1)] text-[#4C79FF] hover:bg-[rgba(76,121,255,0.2)]"
+            ? "bg-gray-200 text-gray-300 cursor-not-allowed"
+            : "bg-[rgba(76,121,255,0.1)] text-primary hover:bg-[rgba(76,121,255,0.2)]"
         )}
       >
         <ChevronLeftIcon className="w-6 h-6" />
@@ -95,9 +95,9 @@ export const Pagination = ({
           return (
             <div
               key={`ellipsis-${index}`}
-              className="w-6 h-6 rounded-md bg-[#F0F2F5] flex items-center justify-center"
+              className="w-6 h-6 rounded-md bg-gray-100 flex items-center justify-center"
             >
-              <MoreIcon className="w-6 h-6 text-[#4B5563]" />
+              <MoreIcon className="w-6 h-6 text-gray-600" />
             </div>
           );
         }
@@ -112,8 +112,8 @@ export const Pagination = ({
             className={cn(
               "h-6 rounded-md flex items-center justify-center transition-colors",
               isActive
-                ? "bg-[#4C79FF] text-white fontSize-body-b px-1 min-w-[24px]"
-                : "bg-[#F0F2F5] text-[#4B5563] fontSize-body-m hover:bg-[#E5E7EB] w-6"
+                ? "bg-primary text-white fontSize-body-b px-1 min-w-[24px]"
+                : "bg-gray-100 text-gray-600 fontSize-body-m hover:bg-gray-200 w-6"
             )}
           >
             {pageNumber}
@@ -128,8 +128,8 @@ export const Pagination = ({
         className={cn(
           "w-6 h-6 rounded-md flex items-center justify-center transition-colors",
           isLastPage
-            ? "bg-[#E5E7EB] text-[#CCD0D6] cursor-not-allowed"
-            : "bg-[rgba(76,121,255,0.1)] text-[#4C79FF] hover:bg-[rgba(76,121,255,0.2)]"
+            ? "bg-gray-200 text-gray-300 cursor-not-allowed"
+            : "bg-[rgba(76,121,255,0.1)] text-primary hover:bg-[rgba(76,121,255,0.2)]"
         )}
       >
         <ChevronRightIcon className="w-6 h-6" />
@@ -142,8 +142,8 @@ export const Pagination = ({
         className={cn(
           "w-6 h-6 rounded-md flex items-center justify-center transition-colors",
           isLastPage
-            ? "bg-[#E5E7EB] text-[#CCD0D6] cursor-not-allowed"
-            : "bg-[rgba(76,121,255,0.1)] text-[#4C79FF] hover:bg-[rgba(76,121,255,0.2)]"
+            ? "bg-gray-200 text-gray-300 cursor-not-allowed"
+            : "bg-[rgba(76,121,255,0.1)] text-primary hover:bg-[rgba(76,121,255,0.2)]"
         )}
       >
         <DoubleChevronRightIcon className="w-6 h-6" />

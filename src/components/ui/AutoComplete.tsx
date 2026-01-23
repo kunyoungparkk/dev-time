@@ -14,7 +14,6 @@ export interface AutoCompleteProps extends React.InputHTMLAttributes<HTMLInputEl
   label?: string;
   options?: AutoCompleteOption[];
   suggestions?: string[];
-  onValueChange?: (value: string) => void;
   onOptionSelect?: (option: AutoCompleteOption) => void;
   open?: boolean;
   defaultOpen?: boolean;
@@ -33,10 +32,6 @@ export const AutoComplete = ({
   placeholder = "Placeholder",
   options,
   suggestions,
-  value: valueProp,
-  defaultValue: defaultValueProp = "",
-  onChange: onChangeProp,
-  onValueChange,
   onOptionSelect,
   open: openProp,
   defaultOpen = false,
@@ -51,8 +46,11 @@ export const AutoComplete = ({
   onKeyDown,
   onFocus,
   onBlur,
+  onChange,
   className,
   id: idProp,
+  value,
+  defaultValue,
   ...inputProps
 }: AutoCompleteProps) => {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
@@ -66,24 +64,13 @@ export const AutoComplete = ({
 
   const builtOptions = useMemo<AutoCompleteOption[]>(() => {
     if (options?.length) return options;
-    const list =
-      suggestions?.length
-        ? suggestions
-        : [];
-    return list.map((item) => ({ label: item, value: item }));
+    if (!suggestions?.length) return [];
+    return suggestions.map((item) => ({ label: item, value: item }));
   }, [options, suggestions]);
 
-  const coerceToString = (value: unknown) => {
-    if (value === null || value === undefined) return "";
-    if (Array.isArray(value)) return String(value[0] ?? "");
-    return String(value);
-  };
-
-  const [value, setValue] = useControllableState<string>({
-    value: valueProp !== undefined ? coerceToString(valueProp) : undefined,
-    defaultValue: coerceToString(defaultValueProp),
-    onChange: onValueChange,
-  });
+  const [inputValue, setInputValue] = useState<string>(
+    (value ?? defaultValue ?? "") as string
+  );
 
   const [open, setOpen] = useControllableState<boolean>({
     value: openProp,
@@ -94,13 +81,15 @@ export const AutoComplete = ({
   const disabled = Boolean(inputProps.disabled);
   const [activeIndex, setActiveIndex] = useState<number>(-1);
 
+  const currentValue = value !== undefined ? String(value) : inputValue;
+
   const filtered = useMemo(() => {
-    const query = value.trim().toLowerCase();
+    const query = currentValue.trim().toLowerCase();
     if (!query) return [];
     return builtOptions.filter((o) => o.label.toLowerCase().includes(query));
-  }, [builtOptions, value]);
+  }, [builtOptions, currentValue]);
 
-  const showCreate = allowCreate && value.trim().length > 0 && filtered.length === 0;
+  const showCreate = allowCreate && currentValue.trim().length > 0 && filtered.length === 0;
   const showMenu = open && (filtered.length > 0 || showCreate);
 
   const optionId = (index: number) => `${listboxId}-option-${index}`;
@@ -142,7 +131,15 @@ export const AutoComplete = ({
   };
 
   const commitSelection = (option: AutoCompleteOption) => {
-    setValue(option.label);
+    const newValue = option.label;
+    if (value === undefined) {
+      setInputValue(newValue);
+    }
+    const syntheticEvent = {
+      target: { value: newValue },
+      currentTarget: { value: newValue },
+    } as React.ChangeEvent<HTMLInputElement>;
+    onChange?.(syntheticEvent);
     onOptionSelect?.(option);
     closeMenu();
     inputRef.current?.focus();
@@ -154,7 +151,7 @@ export const AutoComplete = ({
       className={cn("flex flex-col items-start gap-2 w-[156px]", containerClassName)}
     >
       {label && (
-        <label id={labelId} htmlFor={inputId} className="fontSize-body-sm-m text-[#4B5563]">
+        <label id={labelId} htmlFor={inputId} className="fontSize-body-sm-m text-gray-600">
           {label}
         </label>
       )}
@@ -163,7 +160,7 @@ export const AutoComplete = ({
         <input
           ref={inputRef}
           id={inputId}
-          value={value}
+          value={currentValue}
           disabled={disabled}
           onFocus={(e) => {
             onFocus?.(e);
@@ -172,9 +169,12 @@ export const AutoComplete = ({
             if (openOnFocus) openMenu();
           }}
           onChange={(e) => {
-            onChangeProp?.(e);
             const next = e.target.value;
-            setValue(next);
+            if (value === undefined) {
+              setInputValue(next);
+            }
+            onChange?.(e);
+
             if (!next.trim()) {
               closeMenu();
               return;
@@ -214,7 +214,7 @@ export const AutoComplete = ({
               e.preventDefault();
               const option = filtered[activeIndex];
               if (option) return commitSelection(option);
-              if (showCreate) onCreate?.(value.trim());
+              if (showCreate) onCreate?.(currentValue.trim());
               closeMenu();
               return;
             }
@@ -245,8 +245,8 @@ export const AutoComplete = ({
           aria-activedescendant={activeIndex >= 0 ? optionId(activeIndex) : undefined}
           placeholder={placeholder}
           className={cn(
-            "w-full rounded-[5px] bg-[#F9FAFB] px-4 py-3 fontSize-body-m text-[#1F2937]",
-            "placeholder:text-[#CCD0D6]",
+            "w-full rounded-[5px] bg-gray-50 px-4 py-3 fontSize-body-m text-gray-800",
+            "placeholder:text-gray-300",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF47FF]",
             disabled && "opacity-50 cursor-not-allowed",
             className
@@ -259,7 +259,7 @@ export const AutoComplete = ({
             id={listboxId}
             role="listbox"
             className={cn(
-              "absolute left-0 right-0 z-50 mt-2 w-full rounded-[5px] border border-[#CCD0D6] bg-white px-3 py-4 shadow-[0px_8px_8px_rgba(0,0,0,0.05)]",
+              "absolute left-0 right-0 z-50 mt-2 w-full rounded-[5px] border border-gray-300 bg-white px-3 py-4 shadow-[0px_8px_8px_rgba(0,0,0,0.05)]",
               menuClassName
             )}
             style={{ maxHeight: maxMenuHeight, overflowY: "auto" }}
@@ -283,7 +283,7 @@ export const AutoComplete = ({
                       onClick={() => commitSelection(option)}
                       className={cn(
                         "w-full text-left fontSize-body-s px-2 py-1 rounded-[5px]",
-                        isActive ? "bg-[#F0F2F5] text-[#1F2937]" : "text-[#1F2937]",
+                        isActive ? "bg-gray-100 text-gray-800" : "text-gray-800",
                         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF47FF]"
                       )}
                     >
@@ -296,10 +296,10 @@ export const AutoComplete = ({
               <button
                 type="button"
                 onMouseDown={(e) => e.preventDefault()}
-                onClick={() => onCreate?.(value.trim())}
-                className="flex w-full items-center gap-1 rounded-[5px] px-2 py-1 text-[#023E99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF47FF]"
+                onClick={() => onCreate?.(currentValue.trim())}
+                className="flex w-full items-center gap-1 rounded-[5px] px-2 py-1 text-secondary-indigo focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF47FF]"
               >
-                <PlusIcon size={20} className="text-[#023E99]" />
+                <PlusIcon size={20} className="text-secondary-indigo" />
                 <span className="fontSize-body-s">{createLabel}</span>
               </button>
             )}

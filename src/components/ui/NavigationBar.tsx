@@ -103,7 +103,7 @@ export const NavigationBarLogin = ({
 
   return (
     <div className="flex flex-row justify-end items-center gap-3">
-      <div className="w-10 h-10 rounded-full bg-[#E5E7EB] overflow-hidden flex-none">
+      <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden flex-none">
         {userImage ? (
           <img
             src={userImage}
@@ -111,7 +111,7 @@ export const NavigationBarLogin = ({
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-[#4B5563] fontSize-body-s">
+          <div className="w-full h-full flex items-center justify-center text-gray-600 fontSize-body-s">
             {userName?.[0]?.toUpperCase() || "U"}
           </div>
         )}

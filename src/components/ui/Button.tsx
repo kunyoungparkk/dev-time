@@ -7,25 +7,25 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary: `
-          bg-[#4C79FF] text-white
-          hover:bg-[#4C79FF] hover:shadow-[inset_0_0_0_999px_rgba(0,0,0,0.1)]
+          bg-primary text-white
+          hover:bg-primary hover:shadow-[inset_0_0_0_999px_rgba(0,0,0,0.1)]
           active:shadow-[inset_0_0_0_999px_rgba(0,0,0,0.2)]
           focus:border-[1.5px] focus:border-[#FF47FF]
-          disabled:bg-[#969DA8] disabled:text-[#CCD0D6] disabled:shadow-none
+          disabled:bg-gray-400 disabled:text-gray-300 disabled:shadow-none
         `,
         secondary: `
-          bg-[rgba(76,121,255,0.1)] text-[#4C79FF]
+          bg-[rgba(76,121,255,0.1)] text-primary
           hover:shadow-[inset_0_0_0_999px_rgba(0,0,0,0.1)]
           active:shadow-[inset_0_0_0_999px_rgba(0,0,0,0.2)]
           focus:border-[1.5px] focus:border-[#FF47FF]
-          disabled:bg-[#E5E7EB] disabled:text-[#969DA8] disabled:shadow-none
+          disabled:bg-gray-200 disabled:text-gray-400 disabled:shadow-none
         `,
         tertiary: `
-          bg-[#F9FAFB] text-[#4C79FF]
+          bg-gray-50 text-primary
           hover:shadow-[inset_0_0_0_999px_rgba(0,0,0,0.1)]
           active:shadow-[inset_0_0_0_999px_rgba(0,0,0,0.2)]
           focus:border-[1.5px] focus:border-[#FF47FF]
-          disabled:bg-[#E5E7EB] disabled:text-[#969DA8] disabled:shadow-none
+          disabled:bg-gray-200 disabled:text-gray-400 disabled:shadow-none
         `,
       },
     },
