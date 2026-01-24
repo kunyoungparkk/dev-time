@@ -8,12 +8,8 @@ export const MoreIcon = ({ size = 24, className }: IconProps) => {
     <svg
       width={size}
       height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      viewBox={"0 0 24 24"}
+      fill="currentColor"
       className={className}
     >
 <path d="M8 12C8 12.8284 7.32843 13.5 6.5 13.5C5.67157 13.5 5 12.8284 5 12C5 11.1716 5.67157 10.5 6.5 10.5C7.32843 10.5 8 11.1716 8 12Z"/>
