@@ -247,7 +247,7 @@ export const AutoComplete = ({
           className={cn(
             "w-full rounded-[5px] bg-gray-50 px-4 py-3 fontSize-body-m text-gray-800",
             "placeholder:text-gray-300",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF47FF]",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus)]",
             disabled && "opacity-50 cursor-not-allowed",
             className
           )}
@@ -284,7 +284,7 @@ export const AutoComplete = ({
                       className={cn(
                         "w-full text-left fontSize-body-s px-2 py-1 rounded-[5px]",
                         isActive ? "bg-gray-100 text-gray-800" : "text-gray-800",
-                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF47FF]"
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus)]"
                       )}
                     >
                       {option.label}
@@ -297,7 +297,7 @@ export const AutoComplete = ({
                 type="button"
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => onCreate?.(currentValue.trim())}
-                className="flex w-full items-center gap-1 rounded-[5px] px-2 py-1 text-secondary-indigo focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF47FF]"
+                className="flex w-full items-center gap-1 rounded-[5px] px-2 py-1 text-secondary-indigo focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus)]"
               >
                 <PlusIcon size={20} className="text-secondary-indigo" />
                 <span className="fontSize-body-s">{createLabel}</span>

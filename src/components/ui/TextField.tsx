@@ -48,7 +48,7 @@ export const TextFieldInput = ({
 	  return (
 	    <div
 	      className={cn(
-	        "flex flex-row items-center px-4 py-3 gap-2.5 bg-gray-50 rounded-[5px] flex-1 ring-1 ring-inset ring-transparent has-[input[aria-invalid='true']]:ring-secondary-negative",
+	        "flex flex-row items-center px-4 py-3 gap-2.5 bg-gray-50 rounded-[5px] flex-1 ring-1 ring-inset ring-transparent has-[input[aria-invalid='true']]:ring-[var(--color-secondary-negative)]",
 	        containerClassName
 	      )}
 	    >

@@ -8,7 +8,7 @@ export const ChevronDownIcon = ({ size = 24, className }: IconProps) => {
     <svg
       width={size}
       height={size}
-      viewBox={`0 0 ${size} ${size}`}
+      viewBox={`0 0 24 24`}
       fill="currentColor"
       className={className}
     >

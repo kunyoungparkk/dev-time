@@ -184,7 +184,7 @@ export const ProfileDropdown = ({
         className={cn(
           "flex items-center gap-3 rounded-[999px] bg-white px-3 py-2 shadow-[0px_8px_8px_rgba(0,0,0,0.05)]",
           "border border-gray-300",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF47FF]",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus)]",
           buttonClassName
         )}
       >
@@ -222,7 +222,7 @@ export const ProfileDropdown = ({
                 onKeyDown: (e: React.KeyboardEvent) => onItemKeyDown(e, index),
                 className: cn(
                   "flex w-full items-center gap-4 rounded-[5px] px-2 py-1 text-left text-gray-600",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF47FF]",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus)]",
                   "hover:bg-gray-50"
                 ),
               };

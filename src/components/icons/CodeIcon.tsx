@@ -9,7 +9,7 @@ export const CodeIcon = ({ width = 42, height = 20, className }: IconProps) => {
     <svg
       width={width}
       height={height}
-      viewBox={`0 0 ${width} ${height}`}
+      viewBox={`0 0 42 20`}
       fill="currentColor"
       className={className}
     >

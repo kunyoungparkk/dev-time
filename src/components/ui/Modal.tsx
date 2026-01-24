@@ -83,7 +83,7 @@ export const Modal = ({
       ref={dialogRef}
       onClick={handleBackdropClick}
       className={cn(
-        "backdrop:bg-dim-70",
+        "backdrop:bg-[var(--color-dim-70)]",
         "p-0 border-0 rounded-xl",
         "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
         "m-0",

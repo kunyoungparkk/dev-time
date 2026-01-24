@@ -35,7 +35,7 @@
   --color-state-disabled: #969da8;
   --color-state-hover: #4c79ff;
   --color-state-active: #4c79ff;
-  --color-state-focus: #4c79ff;
+  --color-state-focus: #FF47FF;
 
   /* Dim */
   --color-dim-50: rgba(0, 0, 0, 0.5);

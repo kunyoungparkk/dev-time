@@ -110,7 +110,7 @@ export default function Signup() {
                     }
                   } else {
                     setEmailVariant("error");
-                    setEmailError("이메일 형식으로 작성해 주세요.");
+                    setEmailError("이메일 중복 확인에 실패했습니다.");
                   }
                 }).catch(()=>{
                   alert("이메일 중복 확인에 실패했습니다.");

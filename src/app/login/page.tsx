@@ -29,14 +29,24 @@ export default function Login() {
 
   useEffect(()=>{
     const emailIsValid = email.includes("@") && email.includes(".") && email.indexOf("@") < email.lastIndexOf(".");
-    if (email && !emailIsValid) {
+    
+    if (emailVariant === "error" && emailIsValid) {
+      setEmailVariant("informative");
+      setEmailError("");
+    }
+    else if (email && !emailIsValid) {
       setEmailVariant("error");
       setEmailError("이메일 형식으로 작성해 주세요.");
     }
   }, [email]);
   useEffect(()=>{
     const passwordIsValid = password.length >= 8 && /[A-Za-z]/.test(password) && /\d/.test(password);
-    if (password && !passwordIsValid) {
+    
+    if (passwordVariant === "error" && passwordIsValid) {
+      setPasswordVariant("informative");
+      setPasswordError("");
+    }
+    else if (password && !passwordIsValid) {
       setPasswordVariant("error");
       setPasswordError("비밀번호는 8자 이상, 영문과 숫자 조합이어야 합니다.");
     }
@@ -124,12 +134,7 @@ export default function Login() {
                 name="email"
                 value={email}
                 onChange={(e) => {
-                  const next = e.target.value;
-                  setEmail(next);
-                  if (emailVariant === "error" && next.includes("@") && next.includes(".") && next.indexOf("@") < next.lastIndexOf(".")) {
-                    setEmailVariant("informative");
-                    setEmailError("");
-                  }
+                  setEmail(e.target.value);
                 }}
                 helperText={emailVariant === "error" ? emailError : ""}
                 helperVariant={emailVariant}
@@ -143,18 +148,13 @@ export default function Login() {
                 name="password"
                 value={password}
                 onChange={(e) => {
-                  const next = e.target.value;
-                  setPassword(next);
-                  if (passwordVariant === "error" && next.length > 0) {
-                    setPasswordVariant("informative");
-                  }
+                  setPassword(e.target.value);
                 }}
                 helperText={passwordVariant === "error" ? passwordError : undefined}
                 helperVariant={passwordVariant}
                 type="password"
                 autoComplete="current-password"
                 placeholder="비밀번호를 입력해 주세요."
-                aria-invalid={passwordVariant === "error" ? true : undefined}
                 containerClassName="w-full"
               />
 
