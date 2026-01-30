@@ -1,23 +1,41 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CodeIcon } from "@/components/icons";
 import { Button, Logo, TextField, Modal } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { isValidPassword } from "@/utils/util";
+
+type FieldVariant = "informative" | "error" | "success";
+type FieldState = { value: string; variant: FieldVariant; error: string };
+
+const EMAIL_REQUIRED_MESSAGE = "이메일을 입력해 주세요.";
+const EMAIL_INVALID_MESSAGE = "이메일 형식으로 작성해 주세요.";
+const PASSWORD_REQUIRED_MESSAGE = "비밀번호를 입력해 주세요.";
+const PASSWORD_INVALID_MESSAGE = "비밀번호는 8자 이상, 영문과 숫자 조합이어야 합니다.";
+
+const isValidEmail = (value: string) => {
+  const trimmed = value.trim();
+  return (
+    trimmed.includes("@") &&
+    trimmed.includes(".") &&
+    trimmed.indexOf("@") < trimmed.lastIndexOf(".")
+  );
+};
 
 export default function Login() {
   const router = useRouter();
 
-  const [email, setEmail] = useState("");
-  const [emailVariant, setEmailVariant] = useState<"informative" | "error" | "success">("informative");
-  const [emailError, setEmailError] = useState("");
+  const [email, setEmail] = useState<FieldState>({ value: "", variant: "informative", error: "" });
 
-  const [password, setPassword] = useState("");
-  const [passwordVariant, setPasswordVariant] = useState<"informative" | "error" | "success">("informative");
-  const [passwordError, setPasswordError] = useState("");
-  
+  const [password, setPassword] = useState<FieldState>({
+    value: "",
+    variant: "informative",
+    error: "",
+  });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,32 +43,41 @@ export default function Login() {
   const [modalTitle, setModalTitle] = useState("");
   const [modalAction, setModalAction] = useState<() => void>(() => {});
 
-  const canSubmit = email.trim().length > 0 && password.length > 0;
+  const canSubmit = email.value.trim().length > 0 && password.value.length > 0;
 
-  useEffect(()=>{
-    const emailIsValid = email.includes("@") && email.includes(".") && email.indexOf("@") < email.lastIndexOf(".");
-    
-    if (emailVariant === "error" && emailIsValid) {
-      setEmailVariant("informative");
-      setEmailError("");
+  const handleEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const next = e.target.value;
+    const trimmed = next.trim();
+
+    if (trimmed.length === 0) {
+      setEmail({ value: next, variant: "informative", error: "" });
+      return;
     }
-    else if (email && !emailIsValid) {
-      setEmailVariant("error");
-      setEmailError("이메일 형식으로 작성해 주세요.");
+
+    const nextVariant: FieldVariant = isValidEmail(next) ? "informative" : "error";
+    setEmail({
+      value: next,
+      variant: nextVariant,
+      error: nextVariant === "error" ? EMAIL_INVALID_MESSAGE : "",
+    });
+  };
+
+  const handlePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const next = e.target.value;
+
+    if (next.length === 0) {
+      setPassword({ value: next, variant: "informative", error: "" });
+      return;
     }
-  }, [email]);
-  useEffect(()=>{
-    const passwordIsValid = password.length >= 8 && /[A-Za-z]/.test(password) && /\d/.test(password);
-    
-    if (passwordVariant === "error" && passwordIsValid) {
-      setPasswordVariant("informative");
-      setPasswordError("");
-    }
-    else if (password && !passwordIsValid) {
-      setPasswordVariant("error");
-      setPasswordError("비밀번호는 8자 이상, 영문과 숫자 조합이어야 합니다.");
-    }
-  }, [password])
+
+    const nextVariant: FieldVariant = isValidPassword(next) ? "informative" : "error";
+    setPassword({
+      value: next,
+      variant: nextVariant,
+      error: nextVariant === "error" ? PASSWORD_INVALID_MESSAGE : "",
+    });
+  };
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-white">
       <CodeIcon
@@ -69,58 +96,74 @@ export default function Login() {
               className="mt-10 w-full max-w-[328px] space-y-6"
               onSubmit={async (e) => {
                 e.preventDefault();
-                if(!email || !password){
-                  setEmailVariant("error");
-                  setEmailError("이메일을 입력해 주세요.");
-                  setPasswordVariant("error");
-                  setPasswordError("비밀번호를 입력해 주세요.");
-                  return;
+                if (isSubmitting) return;
+
+                const emailValue = email.value.trim();
+                const passwordValue = password.value;
+
+                let hasRequiredError = false;
+                if (!emailValue) {
+                  hasRequiredError = true;
+                  setEmail((prev) => ({ ...prev, variant: "error", error: EMAIL_REQUIRED_MESSAGE }));
                 }
-                if (emailVariant === "error" || passwordVariant === "error" || isSubmitting) return;
-                
+                if (!passwordValue) {
+                  hasRequiredError = true;
+                  setPassword((prev) => ({
+                    ...prev,
+                    variant: "error",
+                    error: PASSWORD_REQUIRED_MESSAGE,
+                  }));
+                }
+                if (hasRequiredError) return;
+
+                if (email.variant === "error" || password.variant === "error") return;
+
                 setIsSubmitting(true);
                 try {
-                  await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+                  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
                     method: "POST",
                     headers: {
                       "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ email, password }),
-                  }).then(async (res) => {
-                    if(res.ok){
-                      const data = await res.json();
-                      
-                      //localstorage 인증 저장
-                      localStorage.setItem("accessToken", data.accessToken);
-                      localStorage.setItem("refreshToken", data.refreshToken);
-
-                      if(data.isDuplicateLogin){
-                        setIsModalOpen(true);
-                        setModalTitle("중복 로그인이 불가능합니다.");
-                        setModalMessage("다른 기기에 중복 로그인 된 상태입니다. [확인] 버튼을 누르면 다른 기기에서 강제 로그아웃되며, 진행중이던 타이머가 있다면 기록이 자동 삭제됩니다.");
-                        setModalAction(() => () => {
-                          setIsModalOpen(false);
-                          router.push("/");
-                        });
-                      }else{
-                        router.push("/");
-                      }
-
-                      }
-                    else {
-                      // 로그인 정보를 다시 확인해주세요.
-                      setIsModalOpen(true);
-                      setModalTitle("로그인 정보를 다시 확인해주세요.");
-                      setModalAction(() => () => {
-                        setIsModalOpen(false);
-                      });
-                    }
+                    body: JSON.stringify({ email: emailValue, password: passwordValue }),
                   });
 
-                } catch (error) {
-                  // 로그인에 실패했습니다.
+                  if (res.ok) {
+                    const data = await res.json();
+
+                    // localstorage 인증 저장
+                    localStorage.setItem("accessToken", data.accessToken);
+                    localStorage.setItem("refreshToken", data.refreshToken);
+
+                    if (data.isDuplicateLogin) {
+                      setIsModalOpen(true);
+                      setModalTitle("중복 로그인이 불가능합니다.");
+                      setModalMessage(
+                        "다른 기기에 중복 로그인 된 상태입니다. [확인] 버튼을 누르면 다른 기기에서 강제 로그아웃되며, 진행중이던 타이머가 있다면 기록이 자동 삭제됩니다."
+                      );
+                      setModalAction(() => () => {
+                        setIsModalOpen(false);
+                        router.push("/");
+                      });
+                    } else {
+                      router.push("/");
+                    }
+
+                    return;
+                  }
+
+                  // 로그인 정보를 다시 확인해주세요.
+                  setIsModalOpen(true);
+                  setModalTitle("로그인 정보를 다시 확인해주세요.");
+                  setModalMessage("");
+                  setModalAction(() => () => {
+                    setIsModalOpen(false);
+                  });
+                } catch {
+                  // 알 수 없는 이유로 로그인에 실패했습니다.
                   setIsModalOpen(true);
                   setModalTitle("알 수 없는 이유로 로그인에 실패했습니다.");
+                  setModalMessage("");
                   setModalAction(() => () => {
                     setIsModalOpen(false);
                   });
@@ -132,12 +175,10 @@ export default function Login() {
               <TextField
                 label="아이디"
                 name="email"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
-                helperText={emailVariant === "error" ? emailError : ""}
-                helperVariant={emailVariant}
+                value={email.value}
+                onChange={handleEmail}
+                helperText={email.variant === "error" ? email.error : ""}
+                helperVariant={email.variant}
                 autoComplete="email"
                 placeholder="이메일 주소를 입력해 주세요."
                 containerClassName="w-full"
@@ -146,12 +187,10 @@ export default function Login() {
               <TextField
                 label="비밀번호"
                 name="password"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
-                helperText={passwordVariant === "error" ? passwordError : undefined}
-                helperVariant={passwordVariant}
+                value={password.value}
+                onChange={handlePassword}
+                helperText={password.variant === "error" ? password.error : undefined}
+                helperVariant={password.variant}
                 type="password"
                 autoComplete="current-password"
                 placeholder="비밀번호를 입력해 주세요."

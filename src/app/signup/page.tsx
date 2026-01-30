@@ -4,42 +4,169 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Button, Checkbox, Logo, TextField } from "@/components/ui";
 import { useRouter } from "next/navigation";
+import { isValidPassword } from "@/utils/util";
 
-const hasLetter = /[A-Za-z]/;
-const hasNumber = /\d/;
-const isValidPassword = (value: string) =>
-  value.length >= 8 && hasLetter.test(value) && hasNumber.test(value);
+type FieldVariant = "informative" | "error" | "success";
+type FieldState = { value: string; variant: FieldVariant; error: string };
+
+const PASSWORD_ERROR_MESSAGE = "비밀번호는 8자 이상, 영문과 숫자 조합이어야 합니다.";
 
 export default function Signup() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [email, setEmail] = useState("");
-  const [emailVariant, setEmailVariant] = useState<"informative" | "error" | "success">("informative");
-  const [emailError, setEmailError] = useState("");
+  const [email, setEmail] = useState<FieldState>({
+    value: "",
+    variant: "informative",
+    error: "",
+  });
 
-  const [nickname, setNickname] = useState("");
-  const [nicknameVariant, setNicknameVariant] = useState<"informative" | "error" | "success">("informative");
-  const [nicknameError, setNicknameError] = useState("");
+  const [nickname, setNickname] = useState<FieldState>({
+    value: "",
+    variant: "informative",
+    error: "",
+  });
 
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState<FieldState>({
+    value: "",
+    variant: "informative",
+    error: "",
+  });
   const [passwordConfirm, setPasswordConfirm] = useState("");
 
-  const [passwordVariant, setPasswordVariant] = useState<"informative" | "error" | "success">("informative");
-
-  const passwordConfirmVariant = useMemo<"informative" | "error" | "success">(() => {
+  const passwordConfirmVariant = useMemo<FieldVariant>(() => {
     if (!passwordConfirm) return "informative";
-    return password === passwordConfirm ? "success" : "error";
-  }, [password, passwordConfirm]);
+    return password.value === passwordConfirm ? "success" : "error";
+  }, [password.value, passwordConfirm]);
   
   const [agreed, setAgreed] = useState(false);
 
-	  const canSubmit = useMemo(() => {
-	    if (!agreed || emailVariant !== "success" || nicknameVariant !== "success" || passwordVariant !== "success") return false;
-	    if (password !== passwordConfirm) return false;
-	    return true;
-	  }, [agreed, emailVariant, nicknameVariant, passwordVariant, passwordConfirm, password]);
+  const canSubmit =
+    agreed &&
+    email.variant === "success" &&
+    nickname.variant === "success" &&
+    password.variant === "success" &&
+    password.value === passwordConfirm;
 
+  const handleEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const next = e.target.value;
+    setEmail((prev) => {
+      if (prev.variant === "error") return { ...prev, value: next };
+      return {
+        value: next,
+        variant: "error",
+        error: "중복을 확인해 주세요.",
+      };
+    });
+  };
+
+  const handleNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const next = e.target.value;
+    setNickname((prev) => {
+      if (prev.variant === "error") return { ...prev, value: next };
+      return {
+        value: next,
+        variant: "error",
+        error: "중복을 확인해 주세요.",
+      };
+    });
+  };
+
+  const handlePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const next = e.target.value;
+    const isValid = isValidPassword(next);
+    setPassword({
+      value: next,
+      variant: isValid ? "success" : "error",
+      error: isValid ? "" : PASSWORD_ERROR_MESSAGE,
+    });
+  };
+
+  const handleCheckEmail = async () => {
+    const targetEmail = email.value;
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/signup/check-email?email=${encodeURIComponent(targetEmail)}`,
+        { method: "GET", headers: { "Content-Type": "application/json" } }
+      );
+
+      if (!res.ok) {
+        setEmail((prev) => {
+          if (prev.value !== targetEmail) return prev;
+          return { ...prev, variant: "error", error: "이메일 중복 확인에 실패했습니다." };
+        });
+        return;
+      }
+
+      const data = await res.json();
+      setEmail((prev) => {
+        if (prev.value !== targetEmail) return prev;
+        if (data.available) return { ...prev, variant: "success", error: "" };
+        return { ...prev, variant: "error", error: "이미 사용 중인 이메일입니다." };
+      });
+    } catch {
+      alert("이메일 중복 확인에 실패했습니다.");
+    }
+  };
+
+  const handleCheckNickname = async () => {
+    const targetNickname = nickname.value;
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/signup/check-nickname?nickname=${encodeURIComponent(targetNickname)}`,
+        { method: "GET", headers: { "Content-Type": "application/json" } }
+      );
+
+      if (!res.ok) {
+        alert("닉네임 중복 확인에 실패했습니다.");
+        return;
+      }
+
+      const data = await res.json();
+      setNickname((prev) => {
+        if (prev.value !== targetNickname) return prev;
+        if (data.available) return { ...prev, variant: "success", error: "" };
+        return { ...prev, variant: "error", error: "이미 사용 중인 닉네임입니다." };
+      });
+    } catch {
+      alert("닉네임 중복 확인에 실패했습니다.");
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!canSubmit || isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/signup`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email.value,
+          nickname: nickname.value,
+          password: password.value,
+          confirmPassword: passwordConfirm,
+        }),
+      });
+
+      if (!res.ok) {
+        alert("회원가입에 실패했습니다.");
+        return;
+      }
+
+      router.push("/login");
+    } catch {
+      alert("회원가입에 실패했습니다.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleAgreed = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAgreed(e.target.checked);
+  };
+  
   return (
     <main className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
       <section className="hidden lg:flex items-center justify-center bg-primary">
@@ -53,173 +180,90 @@ export default function Signup() {
         <div className="w-full max-w-105">
           <h1 className="text-primary fontSize-heading-b text-center h-[30px]">회원가입</h1>
 
-	          <form
-	            className="mt-10 flex flex-col gap-8"
-	            onSubmit={async (e) => {
-	              e.preventDefault();
-	              if (!canSubmit || isSubmitting) return;
-
-	              setIsSubmitting(true);
-	              try {
-	                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/signup`, {
-	                  method: "POST",
-	                  headers: { "Content-Type": "application/json" },
-	                  body: JSON.stringify({
-	                    email,
-	                    nickname,
-	                    password,
-	                    confirmPassword: passwordConfirm,
-	                  }),
-	                });
-
-	                if (!res.ok) {
-	                  alert("회원가입에 실패했습니다.");
-	                  return;
-	                }
-
-	                router.push("/login");
-	              } catch {
-	                alert("회원가입에 실패했습니다.");
-	              } finally {
-	                setIsSubmitting(false);
-	              }
-	            }}
-	          >
-	            <TextField
-	              label="아이디"
-	              name="email"
-	              value={email}
-	              onChange={(e) => {
-	                setEmail(e.target.value);
-	                if(emailVariant !== "error"){
-                  setEmailVariant("error");
-                  setEmailError("중복을 확인해 주세요.");
-                }
-              }}
-              onButtonClick={()=>{
-                fetch(`${process.env.NEXT_PUBLIC_API_URL}/signup/check-email?email=${encodeURIComponent(email)}`,
-                {method: 'GET', headers: {'Content-Type': 'application/json'}}
-              ).then(async(res)=>{
-                  if(res.ok){
-                    const data = await res.json();
-                    if(data.available){
-                      setEmailVariant("success");
-                    } else {
-                      setEmailVariant("error");
-                      setEmailError("이미 사용 중인 이메일입니다.");
-                    }
-                  } else {
-                    setEmailVariant("error");
-                    setEmailError("이메일 중복 확인에 실패했습니다.");
-                  }
-                }).catch(()=>{
-                  alert("이메일 중복 확인에 실패했습니다.");
-                });
-              }}
+          <form
+            className="mt-10 flex flex-col gap-8"
+            onSubmit={handleSubmit}
+          >
+            <TextField
+              label="아이디"
+              name="email"
+              value={email.value}
+              onChange={handleEmail}
+              onButtonClick={handleCheckEmail}
               helperText={
-                emailVariant === "success"
+                email.variant === "success"
                   ? "사용 가능한 이메일입니다."
-                  : emailVariant === "error" ? emailError : ""
+                  : email.variant === "error"
+                    ? email.error
+                    : ""
               }
-	              helperVariant={emailVariant}
-	              type="email"
-	              placeholder="이메일 주소 형식으로 입력해 주세요."
-	              autoComplete="email"
-	              containerClassName="w-full"
-	              buttonText="중복 확인"
-	            />
-            
-	            <TextField
-	              label="닉네임"
-	              name="nickname"
-	              value={nickname}
-	              onChange={(e) => {
-	                setNickname(e.target.value);
-	                if(nicknameVariant !== "error"){
-                  setNicknameVariant("error");
-                  setNicknameError("중복을 확인해 주세요.");
-                }
-              }}
-              onButtonClick={()=>{
-                fetch(`${process.env.NEXT_PUBLIC_API_URL}/signup/check-nickname?nickname=${encodeURIComponent(nickname)}`,
-                {method: 'GET', headers: {'Content-Type': 'application/json'}}
-              ).then(async(res)=>{
-                  if(res.ok){
-                    const data = await res.json();
-                    if(data.available){
-                      setNicknameVariant("success");
-                    } else {
-                      setNicknameVariant("error");
-                      setNicknameError("이미 사용 중인 닉네임입니다.");
-                    }
-                  } else {
-                  alert("닉네임 중복 확인에 실패했습니다.");
-                  }
-                }).catch(()=>{
-                  alert("닉네임 중복 확인에 실패했습니다.");
-                });
-              }}
+              helperVariant={email.variant}
+              type="email"
+              placeholder="이메일 주소 형식으로 입력해 주세요."
+              autoComplete="email"
+              containerClassName="w-full"
+              buttonText="중복 확인"
+            />
+
+            <TextField
+              label="닉네임"
+              name="nickname"
+              value={nickname.value}
+              onChange={handleNickname}
+              onButtonClick={handleCheckNickname}
               type="text"
               placeholder="닉네임을 입력해 주세요."
               containerClassName="w-full"
               buttonText="중복 확인"
               helperText={
-                nicknameVariant === "success"
+                nickname.variant === "success"
                   ? "사용 가능한 닉네임입니다."
-                  : nicknameVariant === "error" ? nicknameError : ""
+                  : nickname.variant === "error"
+                    ? nickname.error
+                    : ""
               }
-	              helperVariant={nicknameVariant}
-	              autoComplete="nickname"
-	            />
+              helperVariant={nickname.variant}
+              autoComplete="nickname"
+            />
 
-	            <TextField
-	              label="비밀번호"
-	              name="password"
-	              value={password}
-	              onChange={(e) => {
-	                const next = e.target.value;
-	                setPassword(next);
-	                setPasswordVariant(isValidPassword(next) ? "success" : "error");
-	              }}
-	              helperVariant={passwordVariant}
-	              helperText={
-	                passwordVariant === "error"
-	                  ? "비밀번호는 8자 이상, 영문과 숫자 조합이어야 합니다."
-	                  : undefined
-	              }
-	              type="password"
-	              placeholder="비밀번호를 입력해 주세요."
-	              autoComplete="new-password"
-	              containerClassName="w-full"
-	            />
+            <TextField
+              label="비밀번호"
+              name="password"
+              value={password.value}
+              onChange={handlePassword}
+              helperVariant={password.variant}
+              helperText={password.variant === "error" ? password.error : undefined}
+              type="password"
+              placeholder="비밀번호를 입력해 주세요."
+              autoComplete="new-password"
+              containerClassName="w-full"
+            />
 
-	            <TextField
-	              label="비밀번호 확인"
-	              name="confirmPassword"
-	              value={passwordConfirm}
-	              onChange={(e) => setPasswordConfirm(e.target.value)}
-	              helperVariant={passwordConfirmVariant}
-	              helperText={
-	                passwordConfirmVariant === "error" ? "비밀번호가 일치하지 않습니다." : undefined
-	              }
-	              type="password"
-	              placeholder="비밀번호를 다시 입력해 주세요."
-	              autoComplete="new-password"
-	              containerClassName="w-full"
-	            />
+            <TextField
+              label="비밀번호 확인"
+              name="confirmPassword"
+              value={passwordConfirm}
+              onChange={(e) => setPasswordConfirm(e.target.value)}
+              helperVariant={passwordConfirmVariant}
+              helperText={
+                passwordConfirmVariant === "error" ? "비밀번호가 일치하지 않습니다." : undefined
+              }
+              type="password"
+              placeholder="비밀번호를 다시 입력해 주세요."
+              autoComplete="new-password"
+              containerClassName="w-full"
+            />
 
             <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between">
                 <span className="fontSize-label-m text-gray-600">이용약관</span>
                 <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setAgreed((v) => !v)}
-                    className="fontSize-body-sm-m text-primary"
-                  >
-                    동의함
-                  </button>
-                  <Checkbox checked={agreed} onChange={() => setAgreed((v) => !v)} />
+                  <Checkbox
+                    label="동의함"
+                    checked={agreed}
+                    onChange={handleAgreed}
+                    className="flex-row-reverse [&>span]:fontSize-body-sm-m [&>span]:text-primary"
+                  />
                 </div>
               </div>
 
@@ -237,9 +281,14 @@ export default function Signup() {
               </div>
             </div>
 
-	            <Button type="submit" variant="primary" disabled={!canSubmit || isSubmitting} className="w-full h-12">
-	              회원가입
-	            </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              disabled={!canSubmit || isSubmitting}
+              className="w-full h-12"
+            >
+              회원가입
+            </Button>
 
             <div className="flex items-center justify-center gap-2 text-primary">
               <span className="fontSize-body-r">회원이신가요?</span>

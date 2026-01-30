@@ -89,7 +89,9 @@ export const CheckboxTag = ({
       <input
         type="checkbox"
         checked={checked}
-        onChange={(e) => onChange?.(e.target.checked)}
+        onChange={(e) => {
+          onChange?.(e.target.checked);
+        }}
         className="sr-only"
       />
 
