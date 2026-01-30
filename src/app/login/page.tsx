@@ -4,9 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { CodeIcon } from "@/components/icons";
 import { Button, Logo, TextField, Modal } from "@/components/ui";
-import { cn } from "@/lib/utils";
+import { cn, isValidPassword } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { isValidPassword } from "@/utils/util";
 
 type FieldVariant = "informative" | "error" | "success";
 type FieldState = { value: string; variant: FieldVariant; error: string };

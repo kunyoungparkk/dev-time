@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Button, Checkbox, Logo, TextField } from "@/components/ui";
 import { useRouter } from "next/navigation";
-import { isValidPassword } from "@/utils/util";
+import { isValidPassword } from "@/lib/utils";
 
 type FieldVariant = "informative" | "error" | "success";
 type FieldState = { value: string; variant: FieldVariant; error: string };
