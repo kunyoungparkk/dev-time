@@ -8,12 +8,8 @@ export const XIcon = ({ size = 24, className }: IconProps) => {
     <svg
       width={size}
       height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      viewBox={`0 0 24 24`}
+      fill="currentColor"
       className={className}
     >
       <path d="M18 6L6 18M18 18L6 6" />

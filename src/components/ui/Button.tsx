@@ -1,42 +1,54 @@
-import clsx from 'clsx';
+'use client';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'tertiary';
-}
+import { VariantProps, cva } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
-const buttonVariants = {
-  primary: `
-    bg-primary text-white
-    disabled:bg-state-disabled disabled:text-gray-400
-    focus:ring-2 focus:ring-[#FF47FF]
-  `,
-  secondary: `
-    bg-primary-10 text-primary
-    disabled:bg-gray-200 disabled:text-state-disabled
-    focus:ring-2 focus:ring-[#FF47FF]
-  `,
-  tertiary: `
-    bg-gray-50 text-primary
-    disabled:bg-gray-200 disabled:text-state-disabled
-    focus:ring-2 focus:ring-[#FF47FF]
-  `,
-};
+const buttonVariants = cva(
+  "inline-flex items-center justify-center h-12 px-4 py-3 rounded-[5px] gap-2 fontSize-subtitle-s transition-all focus:outline-none",
+  {
+    variants: {
+      variant: {
+        primary: `
+          bg-primary text-white
+          hover:bg-primary hover:shadow-[inset_0_0_0_999px_rgba(0,0,0,0.1)]
+          active:shadow-[inset_0_0_0_999px_rgba(0,0,0,0.2)]
+          focus:border-[1.5px] focus:border-state-focus
+          disabled:bg-gray-400 disabled:text-gray-300 disabled:shadow-none
+        `,
+        secondary: `
+          bg-primary-10 text-primary
+          hover:shadow-[inset_0_0_0_999px_rgba(0,0,0,0.1)]
+          active:shadow-[inset_0_0_0_999px_rgba(0,0,0,0.2)]
+          focus:border-[1.5px] focus:border-state-focus
+          disabled:bg-gray-200 disabled:text-gray-400 disabled:shadow-none
+        `,
+        tertiary: `
+          bg-gray-50 text-primary
+          hover:shadow-[inset_0_0_0_999px_rgba(0,0,0,0.1)]
+          active:shadow-[inset_0_0_0_999px_rgba(0,0,0,0.2)]
+          focus:border-[1.5px] focus:border-state-focus
+          disabled:bg-gray-200 disabled:text-gray-400 disabled:shadow-none
+        `,
+      },
+    },
+    defaultVariants: {
+      variant: "primary",
+    },
+  }
+);
+
+interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {}
 
 export const Button = ({
-  variant = 'primary',
+  variant,
   className,
   children,
   ...props
 }: ButtonProps) => {
   return (
-    <button
-      className={clsx(
-        'inline-flex items-center justify-center leading-none h-12 px-4 py-3 rounded-[5px] gap-8 fontSize-subtitle-s transition-colors focus:outline-none',
-        buttonVariants[variant],
-        className
-      )}
-      {...props}
-    >
+    <button className={cn(buttonVariants({ variant }), className)} {...props}>
       {children}
     </button>
   );

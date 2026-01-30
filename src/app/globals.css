@@ -1,6 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap");
 @import "tailwindcss";
-
 @theme {
+  --font-digital: "Orbitron", sans-serif;
   /* ===== Colors ===== */
   /* Primary */
   --color-primary: #4c79ff;
@@ -10,13 +11,13 @@
   --color-primary-gradient-from: #4c79ff;
   --color-primary-gradient-to: #023e99;
 
-  /* Semantic */
-  --color-semantic-indigo: #023e99;
-  --color-semantic-informative: #2563eb;
-  --color-semantic-negative: #dc2626;
-  --color-semantic-notice: #ffbf24;
-  --color-semantic-positive: #22c55e;
-  --color-semantic-fuchsia: #fd28ec;
+  /* Secondary */
+  --color-secondary-indigo: #023e99;
+  --color-secondary-informative: #2563eb;
+  --color-secondary-negative: #dc2626;
+  --color-secondary-notice: #ffbf24;
+  --color-secondary-positive: #22c55e;
+  --color-secondary-fuchsia: #fd28ec;
 
   /* Gray */
   --color-gray-white: #ffffff;
@@ -34,7 +35,7 @@
   --color-state-disabled: #969da8;
   --color-state-hover: #4c79ff;
   --color-state-active: #4c79ff;
-  --color-state-focus: #4c79ff;
+  --color-state-focus: #FF47FF;
 
   /* Dim */
   --color-dim-50: rgba(0, 0, 0, 0.5);
@@ -166,4 +167,166 @@
   --font-size-label-r: 10px;
   --font-size-label-r--line-height: 12px;
   --font-size-label-r--font-weight: 400;
+}
+
+@layer utilities {
+  .font-digital {
+    font-family: var(--font-digital, "Orbitron", sans-serif);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+  }
+
+  /* Heading */
+  .fontSize-heading-b {
+    font-size: var(--font-size-heading-b);
+    line-height: var(--font-size-heading-b--line-height);
+    font-weight: var(--font-size-heading-b--font-weight);
+  }
+
+  .fontSize-heading-s {
+    font-size: var(--font-size-heading-s);
+    line-height: var(--font-size-heading-s--line-height);
+    font-weight: var(--font-size-heading-s--font-weight);
+  }
+
+  .fontSize-heading-m {
+    font-size: var(--font-size-heading-m);
+    line-height: var(--font-size-heading-m--line-height);
+    font-weight: var(--font-size-heading-m--font-weight);
+  }
+
+  .fontSize-heading-r {
+    font-size: var(--font-size-heading-r);
+    line-height: var(--font-size-heading-r--line-height);
+    font-weight: var(--font-size-heading-r--font-weight);
+  }
+
+  /* Title */
+  .fontSize-title-b {
+    font-size: var(--font-size-title-b);
+    line-height: var(--font-size-title-b--line-height);
+    font-weight: var(--font-size-title-b--font-weight);
+  }
+
+  .fontSize-title-s {
+    font-size: var(--font-size-title-s);
+    line-height: var(--font-size-title-s--line-height);
+    font-weight: var(--font-size-title-s--font-weight);
+  }
+
+  .fontSize-title-m {
+    font-size: var(--font-size-title-m);
+    line-height: var(--font-size-title-m--line-height);
+    font-weight: var(--font-size-title-m--font-weight);
+  }
+
+  .fontSize-title-r {
+    font-size: var(--font-size-title-r);
+    line-height: var(--font-size-title-r--line-height);
+    font-weight: var(--font-size-title-r--font-weight);
+  }
+
+  /* Subtitle */
+  .fontSize-subtitle-b {
+    font-size: var(--font-size-subtitle-b);
+    line-height: var(--font-size-subtitle-b--line-height);
+    font-weight: var(--font-size-subtitle-b--font-weight);
+  }
+
+  .fontSize-subtitle-s {
+    font-size: var(--font-size-subtitle-s);
+    line-height: var(--font-size-subtitle-s--line-height);
+    font-weight: var(--font-size-subtitle-s--font-weight);
+  }
+
+  .fontSize-subtitle-m {
+    font-size: var(--font-size-subtitle-m);
+    line-height: var(--font-size-subtitle-m--line-height);
+    font-weight: var(--font-size-subtitle-m--font-weight);
+  }
+
+  .fontSize-subtitle-r {
+    font-size: var(--font-size-subtitle-r);
+    line-height: var(--font-size-subtitle-r--line-height);
+    font-weight: var(--font-size-subtitle-r--font-weight);
+  }
+
+  /* Body */
+  .fontSize-body-b {
+    font-size: var(--font-size-body-b);
+    line-height: var(--font-size-body-b--line-height);
+    font-weight: var(--font-size-body-b--font-weight);
+  }
+
+  .fontSize-body-s {
+    font-size: var(--font-size-body-s);
+    line-height: var(--font-size-body-s--line-height);
+    font-weight: var(--font-size-body-s--font-weight);
+  }
+
+  .fontSize-body-m {
+    font-size: var(--font-size-body-m);
+    line-height: var(--font-size-body-m--line-height);
+    font-weight: var(--font-size-body-m--font-weight);
+  }
+
+  .fontSize-body-r {
+    font-size: var(--font-size-body-r);
+    line-height: var(--font-size-body-r--line-height);
+    font-weight: var(--font-size-body-r--font-weight);
+  }
+
+  /* Body Small (Label) */
+  .fontSize-body-sm-b,
+  .fontSize-label-b {
+    font-size: var(--font-size-body-sm-b);
+    line-height: var(--font-size-body-sm-b--line-height);
+    font-weight: var(--font-size-body-sm-b--font-weight);
+  }
+
+  .fontSize-body-sm-s,
+  .fontSize-label-s {
+    font-size: var(--font-size-body-sm-s);
+    line-height: var(--font-size-body-sm-s--line-height);
+    font-weight: var(--font-size-body-sm-s--font-weight);
+  }
+
+  .fontSize-body-sm-m,
+  .fontSize-label-m {
+    font-size: var(--font-size-body-sm-m);
+    line-height: var(--font-size-body-sm-m--line-height);
+    font-weight: var(--font-size-body-sm-m--font-weight);
+  }
+
+  .fontSize-body-sm-r,
+  .fontSize-label-r {
+    font-size: var(--font-size-body-sm-r);
+    line-height: var(--font-size-body-sm-r--line-height);
+    font-weight: var(--font-size-body-sm-r--font-weight);
+  }
+
+  /* Caption */
+  .fontSize-caption-b {
+    font-size: var(--font-size-caption-b);
+    line-height: var(--font-size-caption-b--line-height);
+    font-weight: var(--font-size-caption-b--font-weight);
+  }
+
+  .fontSize-caption-s {
+    font-size: var(--font-size-caption-s);
+    line-height: var(--font-size-caption-s--line-height);
+    font-weight: var(--font-size-caption-s--font-weight);
+  }
+
+  .fontSize-caption-m {
+    font-size: var(--font-size-caption-m);
+    line-height: var(--font-size-caption-m--line-height);
+    font-weight: var(--font-size-caption-m--font-weight);
+  }
+
+  .fontSize-caption-r {
+    font-size: var(--font-size-caption-r);
+    line-height: var(--font-size-caption-r--line-height);
+    font-weight: var(--font-size-caption-r--font-weight);
+  }
 }

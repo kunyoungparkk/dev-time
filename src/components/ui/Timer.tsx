@@ -1,0 +1,191 @@
+"use client";
+
+import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
+import { TodoIcon, ResetIcon, PlayIcon, PauseIcon, FinishIcon } from "@/components/icons";
+
+// Timer Unit Component
+interface TimerUnitProps {
+  value: number;
+  label: string;
+}
+
+const TimerUnit = ({ value, label }: TimerUnitProps) => {
+  const displayValue = String(value).padStart(2, "0");
+
+  return (
+    <div className="flex flex-col items-center px-2 py-2 pb-9 gap-9 w-[264px] h-[298px] bg-gradient-to-br from-primary/0 to-primary/20 border border-primary rounded-[12px]">
+      <div className="w-[250px] h-[200px] text-[154px] leading-[200px] text-primary text-center font-digital">
+        {displayValue}
+      </div>
+      <div className="fontSize-label-s text-primary text-center">{label}</div>
+    </div>
+  );
+};
+
+// Timer Separator
+const TimerSeparator = () => (
+  <div className="flex flex-col items-start gap-16 w-6 h-28">
+    <div className="w-6 h-6 bg-primary rounded-full self-stretch" />
+    <div className="w-6 h-6 bg-primary rounded-full self-stretch" />
+  </div>
+);
+
+// Timer Action Button
+interface TimerActionButtonProps {
+  icon: "play" | "pause" | "finish";
+  active: boolean;
+  onClick?: () => void;
+}
+
+const TimerActionButton = ({
+  icon,
+  active,
+  onClick,
+}: TimerActionButtonProps) => {
+  const IconComponent =
+    icon === "play" ? PlayIcon : icon === "pause" ? PauseIcon : FinishIcon;
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={!active}
+      className={cn(
+        "flex items-center justify-center w-[100px] h-[100px] rounded-[8px] transition-all",
+        active ? "text-primary" : "text-primary/10 cursor-not-allowed",
+      )}
+    >
+      <IconComponent size={80} />
+    </button>
+  );
+};
+
+const TimerActionTodoButton = () => {
+  return (
+    <button
+      type="button"
+      className="flex items-center justify-center w-16 h-16 rounded-[8px] text-primary transition-all hover:bg-primary/10"
+    >
+      <TodoIcon size={48} />
+    </button>
+  );
+}
+
+// Main Timer Component
+export interface TimerProps {
+  initialHours?: number;
+  initialMinutes?: number;
+  initialSeconds?: number;
+  className?: string;
+}
+
+export const Timer = ({
+  initialHours = 0,
+  initialMinutes = 0,
+  initialSeconds = 0,
+  className,
+}: TimerProps) => {
+  const [isRunning, setIsRunning] = useState(false);
+  const [hours, setHours] = useState(initialHours);
+  const [minutes, setMinutes] = useState(initialMinutes);
+  const [seconds, setSeconds] = useState(initialSeconds);
+
+  const isReady = !isRunning && hours === 0 && minutes === 0 && seconds === 0;
+  const isPaused = !isRunning && (hours > 0 || minutes > 0 || seconds > 0);
+
+  useEffect(() => {
+    if (!isRunning) return;
+
+    const interval = setInterval(() => {
+      setSeconds((prev) => {
+        if (prev > 0) return prev - 1;
+
+        setMinutes((prevMin) => {
+          if (prevMin > 0) {
+            setSeconds(59);
+            return prevMin - 1;
+          }
+
+          setHours((prevHour) => {
+            if (prevHour > 0) {
+              setMinutes(59);
+              setSeconds(59);
+              return prevHour - 1;
+            }
+
+            setIsRunning(false);
+            return 0;
+          });
+
+          return 0;
+        });
+
+        return 0;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isRunning]);
+
+  const handleStart = () => {
+    if (hours > 0 || minutes > 0 || seconds > 0) {
+      setIsRunning(true);
+    }
+  };
+
+  const handlePause = () => {
+    setIsRunning(false);
+  };
+
+  const handleFinish = () => {
+    setIsRunning(false);
+    setHours(0);
+    setMinutes(0);
+    setSeconds(0);
+  };
+
+  const handleReset = () => {
+    setIsRunning(false);
+    setHours(initialHours);
+    setMinutes(initialMinutes);
+    setSeconds(initialSeconds);
+  };
+
+  return (
+    <div className={cn("flex flex-col gap-8", className)}>
+      {/* Timer Display */}
+      <div className="flex flex-row items-center gap-12">
+        <TimerUnit value={hours} label="H O U R S" />
+        <TimerSeparator />
+        <TimerUnit value={minutes} label="M I N U T E S" />
+        <TimerSeparator />
+        <TimerUnit value={seconds} label="S E C O N D S" />
+      </div>
+
+      {/* Timer Actions */}
+      <div className="flex flex-row items-center gap-[134px]">
+        {/* Main Actions */}
+        <div className="flex flex-row items-center gap-20">
+          <TimerActionButton
+            icon="play"
+            active={isReady || isPaused}
+            onClick={handleStart}
+          />
+          <TimerActionButton
+            icon="pause"
+            active={isRunning}
+            onClick={handlePause}
+          />
+          <TimerActionButton
+            icon="finish"
+            active={isRunning || isPaused}
+            onClick={handleFinish}
+          />
+          <TimerActionTodoButton />
+          <ResetIcon size={48}/>
+        </div>
+      </div>
+    </div>
+  );
+};
