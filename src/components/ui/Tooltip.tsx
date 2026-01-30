@@ -70,7 +70,7 @@ export const Tooltip = ({
           style={tooltipStyle}
           className={cn(
             "absolute z-50 max-w-82 rounded-md py-1 px-2 gap-2",
-            "bg-[var(--color-gray-800)] text-[var(--color-gray-white)] fontSize-caption-r",
+            "bg-gray-800 text-gray-white fontSize-caption-r",
             "whitespace-nowrap shadow-lg",
             "animate-in fade-in-0 zoom-in-95",
             className

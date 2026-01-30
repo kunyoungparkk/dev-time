@@ -1,29 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-
-export function useControllableState<T>({
-  value,
-  defaultValue,
-  onChange,
-}: {
-  value: T | undefined;
-  defaultValue: T;
-  onChange?: (nextValue: T) => void;
-}) {
-  const [uncontrolledValue, setUncontrolledValue] = useState<T>(defaultValue);
-  const isControlled = value !== undefined;
-
-  const currentValue = isControlled ? value : uncontrolledValue;
-
-  const setValue = useCallback(
-    (nextValue: T) => {
-      if (!isControlled) setUncontrolledValue(nextValue);
-      onChange?.(nextValue);
-    },
-    [isControlled, onChange]
-  );
-
-  return [currentValue, setValue] as const;
-}
+import { useEffect, useRef } from "react";
 
 export function useOnClickOutside<T extends HTMLElement>({
   ref,

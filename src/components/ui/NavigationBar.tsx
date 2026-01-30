@@ -48,7 +48,7 @@ export const NavigationBar = ({
 
 export const NavigationBarMenu = ({ currentPath = '/' }: NavigationBarMenuProps) => {
   return (
-    <div className="flex flex-row items-center gap-9 text-[var(--color-secondary-indigo)]">
+    <div className="flex flex-row items-center gap-9 text-secondary-indigo">
       <Link
         href="/dashboard"
         className={cn(
@@ -75,7 +75,7 @@ export const NavigationBarMenu = ({ currentPath = '/' }: NavigationBarMenuProps)
 
 export const NavigationBarAccount = ({})=>{
   return (
-      <div className="flex flex-row justify-end items-center gap-9 text-[var(--color-secondary-indigo)] fontSize-body-s">
+      <div className="flex flex-row justify-end items-center gap-9 text-secondary-indigo fontSize-body-s">
         <Link href="/login">
           로그인
         </Link>
@@ -116,7 +116,7 @@ export const NavigationBarLogin = ({
           </div>
         )}
       </div>
-      <span className="fontSize-body-b text-[var(--color-secondary-indigo)] text-right">
+      <span className="fontSize-body-b text-secondary-indigo text-right">
         {userName || "User"}
       </span>
     </div>

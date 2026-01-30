@@ -252,7 +252,7 @@ export const Dropdown = ({
           onKeyDown={onButtonKeyDown}
           className={cn(
             "flex w-full items-center gap-2 rounded-[5px] bg-gray-50 px-4 py-3 text-left",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus)]",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-state-focus",
             disabled && "opacity-50 cursor-not-allowed",
             buttonClassName
           )}
@@ -309,7 +309,7 @@ export const Dropdown = ({
                       onKeyDown={(e) => onOptionKeyDown(e, index)}
                       className={cn(
                         "w-full text-left px-2 py-1 fontSize-body-m rounded-[5px]",
-                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus)]",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-state-focus",
                         option.disabled && "cursor-not-allowed opacity-40",
                         isActive || isSelected
                           ? "font-bold text-secondary-indigo"

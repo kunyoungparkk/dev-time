@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { CodeIcon } from "@/components/icons";
 import { Button, Logo, TextField, Modal } from "@/components/ui";
 import { cn } from "@/lib/utils";
@@ -25,7 +25,7 @@ export default function Login() {
   const [modalTitle, setModalTitle] = useState("");
   const [modalAction, setModalAction] = useState<() => void>(() => {});
 
-  const canSubmit = useMemo(() => email.trim().length > 0 && password.length > 0, [email, password]);
+  const canSubmit = email.trim().length > 0 && password.length > 0;
 
   useEffect(()=>{
     const emailIsValid = email.includes("@") && email.includes(".") && email.indexOf("@") < email.lastIndexOf(".");

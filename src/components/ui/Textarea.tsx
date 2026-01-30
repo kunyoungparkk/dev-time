@@ -48,7 +48,7 @@ export const Textarea = ({
             "px-4 py-3 rounded-[5px] bg-gray-50",
             "fontSize-body-m text-gray-600",
             "placeholder:text-gray-300",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus)]",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-state-focus",
             "disabled:opacity-50 disabled:cursor-not-allowed",
             error && "ring-2 ring-red-500",
             className

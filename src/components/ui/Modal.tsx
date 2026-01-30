@@ -83,14 +83,14 @@ export const Modal = ({
       ref={dialogRef}
       onClick={handleBackdropClick}
       className={cn(
-        "backdrop:bg-[var(--color-dim-70)]",
+        "backdrop:bg-dim-70",
         "p-0 border-0 rounded-xl",
         "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
         "m-0",
         className,
       )}
     >
-      <div className="bg-white w-82 rounded-xl p-6 flex flex-col gap-6 shadow-[var(--color-shadow-1)]">
+      <div className="bg-white w-82 rounded-xl p-6 flex flex-col gap-6 shadow-[0px_8px_8px_rgba(0,0,0,0.05)]">
         <div className="flex flex-col gap-2">
           {title && <h2 className="fontSize-title-s">{title}</h2>}
           {description && <p className="fontSize-body-m">{description}</p>}

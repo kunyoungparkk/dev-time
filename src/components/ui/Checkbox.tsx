@@ -9,6 +9,11 @@ export interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElemen
   color?: string;
 }
 
+const checkboxColorClasses = {
+  primary: { border: "border-primary", icon: "text-primary" },
+  white: { border: "border-white", icon: "text-white" },
+} as const;
+
 export const Checkbox = ({
   label,
   className,
@@ -18,6 +23,10 @@ export const Checkbox = ({
   color = "primary",
   ...props
 }: CheckboxProps) => {
+  const resolvedColor =
+    checkboxColorClasses[color as keyof typeof checkboxColorClasses] ??
+    checkboxColorClasses.primary;
+
   return (
     <label className={cn("inline-flex items-center gap-2 cursor-pointer", className)}>
       <div className="relative">
@@ -29,22 +38,24 @@ export const Checkbox = ({
           {...props}
         />
           <div
-            className="rounded-md transition-all flex items-center justify-center border"
+            className={cn(
+              "rounded-md transition-all flex items-center justify-center border",
+              resolvedColor.border,
+              checked ? "bg-primary-10" : "bg-transparent"
+            )}
             style={{
               width: size,
               height: size,
-              borderColor: `var(--color-${color})`,
-              backgroundColor: checked ? "rgba(76,121,255,0.1)" : "transparent",
             }}
           >
             {checked && (
-              <CheckIcon className={`text-[var(--color-${color})]`} size={size} />
+              <CheckIcon className={resolvedColor.icon} size={size} />
             )}
           </div>
       </div>
 
       {label && (
-        <span className="fontSize-body-m text-[var(--color-gray-500)]">
+        <span className="fontSize-body-m text-gray-500">
           {label}
         </span>
       )}
@@ -70,8 +81,8 @@ export const CheckboxTag = ({
       className={cn(
         "inline-flex flex-row justify-center items-center py-1 px-2 gap-2 rounded-md cursor-pointer transition-colors",
         checked
-          ? "bg-[var(--color-primary-10)] text-[var(--color-primary)]"
-          : "bg-[var(--color-gray-100)] text-[var(--color-gray-500)]",
+          ? "bg-primary-10 text-primary"
+          : "bg-gray-100 text-gray-500",
         className
       )}
     >
@@ -86,12 +97,12 @@ export const CheckboxTag = ({
         className={cn(
           "w-[18px] h-[18px] rounded-md transition-all flex items-center justify-center flex-none",
           checked
-            ? "bg-[rgba(76,121,255,0.1)] border border-[var(--color-primary)]"
-            : "bg-white border border-[var(--color-primary)]"
+            ? "bg-primary-10 border border-primary"
+            : "bg-white border border-primary"
         )}
       >
         {checked && (
-          <CheckIcon className="text-[var(--color-primary)]"/>
+          <CheckIcon className="text-primary" />
         )}
       </div>
 

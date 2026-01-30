@@ -12,21 +12,21 @@ const buttonVariants = cva(
           bg-primary text-white
           hover:bg-primary hover:shadow-[inset_0_0_0_999px_rgba(0,0,0,0.1)]
           active:shadow-[inset_0_0_0_999px_rgba(0,0,0,0.2)]
-          focus:border-[1.5px] focus:border-[var(--color-state-focus)]
+          focus:border-[1.5px] focus:border-state-focus
           disabled:bg-gray-400 disabled:text-gray-300 disabled:shadow-none
         `,
         secondary: `
-          bg-[rgba(76,121,255,0.1)] text-primary
+          bg-primary-10 text-primary
           hover:shadow-[inset_0_0_0_999px_rgba(0,0,0,0.1)]
           active:shadow-[inset_0_0_0_999px_rgba(0,0,0,0.2)]
-          focus:border-[1.5px] focus:border-[var(--color-state-focus)]
+          focus:border-[1.5px] focus:border-state-focus
           disabled:bg-gray-200 disabled:text-gray-400 disabled:shadow-none
         `,
         tertiary: `
           bg-gray-50 text-primary
           hover:shadow-[inset_0_0_0_999px_rgba(0,0,0,0.1)]
           active:shadow-[inset_0_0_0_999px_rgba(0,0,0,0.2)]
-          focus:border-[1.5px] focus:border-[var(--color-state-focus)]
+          focus:border-[1.5px] focus:border-state-focus
           disabled:bg-gray-200 disabled:text-gray-400 disabled:shadow-none
         `,
       },
